@@ -1,0 +1,34 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "bilibili-mcp-agent",
+  "version": "0.1.0",
+  "description": "A local MCP server that gives agents structured access to Bilibili discovery, media metadata, public content, account reads, and explicitly gated interactions.",
+  "author": {
+    "name": "only3412"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/only3412/bilibili-mcp-agent",
+  "repository": "https://github.com/only3412/bilibili-mcp-agent",
+  "keywords": [
+    "bilibili",
+    "mcp",
+    "agent",
+    "video",
+    "local"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Bilibili MCP Agent",
+        "shortDescription": "Bilibili tools for agents",
+        "longDescription": "A local Model Context Protocol server for Bilibili search, videos, subtitles, danmaku, comments, users, favorites, dynamics, articles, live rooms, account reads, and explicitly confirmed write operations.",
+        "developerName": "only3412",
+        "category": "Developer Tools",
+        "capabilities": [
+          "MCP"
+        ],
+        "defaultPrompt": "Use the Bilibili MCP tools to search, inspect, and organize Bilibili content. Ask before any account-changing action."
+      }
+    }
+  }
+}

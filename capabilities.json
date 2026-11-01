@@ -1,0 +1,1326 @@
+{
+  "version": "0.1.0",
+  "transport": [
+    "stdio",
+    "streamable-http"
+  ],
+  "categories": [
+    "专栏",
+    "互动写入",
+    "动态",
+    "发现",
+    "字幕与弹幕",
+    "收藏",
+    "用户",
+    "直播",
+    "视频",
+    "评论",
+    "账号"
+  ],
+  "tools": [
+    {
+      "name": "bilibili_search",
+      "category": "发现",
+      "description": "分类搜索视频、UP主、直播间、专栏和影视。返回分页原始结构；标题可能含高亮HTML。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/search/type",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "search_type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "video",
+            "enum": [
+              "video",
+              "bili_user",
+              "live_room",
+              "live_user",
+              "article",
+              "media_bangumi",
+              "media_ft"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "order": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "totalrank",
+            "enum": [
+              "totalrank",
+              "click",
+              "pubdate",
+              "dm",
+              "stow",
+              "scores",
+              "fans",
+              "level"
+            ]
+          },
+          "duration": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4,
+            "default": 0
+          },
+          "tids": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
+        },
+        "required": [
+          "keyword"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_search_hot",
+      "category": "发现",
+      "description": "读取实时搜索热词。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/search/square",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 10
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_popular",
+      "category": "发现",
+      "description": "读取热门视频列表。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/popular",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pn": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "ps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_ranking",
+      "category": "发现",
+      "description": "按分区读取排行榜；rid=0为全站。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/ranking/v2",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "rid": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "all",
+            "enum": [
+              "all",
+              "origin",
+              "rookie"
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_region_online",
+      "category": "发现",
+      "description": "读取分区在线/投稿统计。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/online",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_video_info",
+      "category": "视频",
+      "description": "读取视频标题、简介、UP主、aid、cid、分P与统计。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/view",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "bvid": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^BV[0-9A-Za-z]{10}$"
+          }
+        },
+        "required": [
+          "bvid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_video_pages",
+      "category": "视频",
+      "description": "读取视频各分P的cid、标题与时长。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/player/pagelist",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "bvid": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^BV[0-9A-Za-z]{10}$"
+          }
+        },
+        "required": [
+          "bvid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_video_stat",
+      "category": "视频",
+      "description": "读取视频播放、弹幕、评论、收藏、投币与点赞计数，从当前详情接口提取stat。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/view",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "bvid": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^BV[0-9A-Za-z]{10}$"
+          }
+        },
+        "required": [
+          "bvid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_video_related",
+      "category": "视频",
+      "description": "读取关联推荐视频。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/archive/related",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "bvid": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^BV[0-9A-Za-z]{10}$"
+          }
+        },
+        "required": [
+          "bvid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_video_tags",
+      "category": "视频",
+      "description": "读取视频标签。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/tag/archive/tags",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "bvid": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^BV[0-9A-Za-z]{10}$"
+          }
+        },
+        "required": [
+          "bvid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_video_playurl",
+      "category": "视频",
+      "description": "取得当前会话可播放的临时媒体地址与清晰度；地址有时效。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/player/playurl",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "bvid": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^BV[0-9A-Za-z]{10}$"
+          },
+          "cid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "qn": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 127,
+            "default": 64
+          },
+          "fnval": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4048,
+            "default": 16
+          },
+          "fourk": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1
+          }
+        },
+        "required": [
+          "bvid",
+          "cid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_subtitles",
+      "category": "字幕与弹幕",
+      "description": "查询分P字幕轨道；部分AI字幕依赖登录态及平台可见性。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/player/wbi/v2",
+      "authentication": "public / session optional",
+      "wbi": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "bvid": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^BV[0-9A-Za-z]{10}$"
+          },
+          "cid": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "bvid",
+          "cid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_subtitle_text",
+      "category": "字幕与弹幕",
+      "description": "读取字幕接口返回的hdslb字幕JSON，合并时间戳文本。",
+      "method": "GET",
+      "url": "hdslb subtitle URL only",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 3000
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_danmaku",
+      "category": "字幕与弹幕",
+      "description": "读取分P公开XML弹幕，最多返回limit条。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/v1/dm/list.so",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "oid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 100
+          }
+        },
+        "required": [
+          "oid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_comments",
+      "category": "评论",
+      "description": "读取视频/专栏主评论；oid使用视频aid，type=1为视频、12为专栏。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/v2/reply",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "oid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "type": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          },
+          "pn": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "ps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "sort": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2,
+            "default": 2
+          }
+        },
+        "required": [
+          "oid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_comment_replies",
+      "category": "评论",
+      "description": "读取指定根评论下的回复。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/v2/reply/reply",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "oid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "root": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "type": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          },
+          "pn": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "ps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          }
+        },
+        "required": [
+          "oid",
+          "root"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_user_info",
+      "category": "用户",
+      "description": "读取UP主公开资料，自动附加WBI签名。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/space/wbi/acc/info",
+      "authentication": "public / session optional",
+      "wbi": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "mid": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "mid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_user_videos",
+      "category": "用户",
+      "description": "读取UP主视频投稿列表，自动附加WBI签名。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/space/wbi/arc/search",
+      "authentication": "public / session optional",
+      "wbi": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "mid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "pn": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "ps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "order": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "pubdate",
+            "enum": [
+              "pubdate",
+              "click",
+              "stow"
+            ]
+          },
+          "tid": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
+        },
+        "required": [
+          "mid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_user_relation_stats",
+      "category": "用户",
+      "description": "读取用户关注数、粉丝数等关系统计。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/relation/stat",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "vmid": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "vmid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_user_followings",
+      "category": "用户",
+      "description": "分页读取用户公开关注列表；平台会限制可见范围。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/relation/followings",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "vmid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "pn": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "ps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          }
+        },
+        "required": [
+          "vmid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_me",
+      "category": "账号",
+      "description": "使用当前已绑定会话核验登录并读取本人资料。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/nav",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_my_history",
+      "category": "账号",
+      "description": "分页读取本人观看历史；首次max/view_at=0，后续沿用响应cursor。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/web-interface/history/cursor",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "max": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "view_at": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "business": {
+            "type": "string",
+            "enum": [
+              "",
+              "archive",
+              "pgc",
+              "live",
+              "article"
+            ],
+            "default": ""
+          },
+          "ps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 20
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_my_watch_later",
+      "category": "账号",
+      "description": "读取本人稍后再看列表。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/v2/history/toview",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_favorite_folders",
+      "category": "收藏",
+      "description": "列出收藏夹；不传up_mid时使用当前已绑定账号。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/v3/fav/folder/created/list-all",
+      "authentication": "self_mid needs session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "up_mid": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_favorite_items",
+      "category": "收藏",
+      "description": "分页读取可见收藏夹中的视频。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/v3/fav/resource/list",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "media_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "pn": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "ps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "order": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "mtime",
+            "enum": [
+              "mtime",
+              "view",
+              "pubtime"
+            ]
+          },
+          "type": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2,
+            "default": 0
+          },
+          "tid": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
+        },
+        "required": [
+          "media_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_my_feed",
+      "category": "动态",
+      "description": "读取当前登录用户关注动态；后续分页传offset。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "string",
+            "default": "",
+            "maxLength": 200
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "all",
+            "enum": [
+              "all",
+              "video",
+              "pgc",
+              "article"
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_user_feed",
+      "category": "动态",
+      "description": "读取指定UP主公开动态。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/space",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "host_mid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "offset": {
+            "type": "string",
+            "default": "",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "host_mid"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_dynamic_detail",
+      "category": "动态",
+      "description": "读取指定动态内容。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/polymer/web-dynamic/v1/detail",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[0-9]+$"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_article_info",
+      "category": "专栏",
+      "description": "读取专栏文章公开信息。",
+      "method": "GET",
+      "url": "https://api.bilibili.com/x/article/viewinfo",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_live_areas",
+      "category": "直播",
+      "description": "读取直播分区树。",
+      "method": "GET",
+      "url": "https://api.live.bilibili.com/room/v1/Area/getList",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_live_rooms",
+      "category": "直播",
+      "description": "按直播分区读取直播间列表。",
+      "method": "GET",
+      "url": "https://api.live.bilibili.com/room/v3/area/getRoomList",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "parent_area_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "area_id": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000,
+            "default": 1
+          },
+          "page_size": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "default": 20
+          },
+          "sort_type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "online",
+            "enum": [
+              "online",
+              "live_time"
+            ]
+          }
+        },
+        "required": [
+          "parent_area_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_live_room_info",
+      "category": "直播",
+      "description": "读取直播间信息和直播状态。",
+      "method": "GET",
+      "url": "https://api.live.bilibili.com/room/v1/Room/get_info",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "room_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_live_playurl",
+      "category": "直播",
+      "description": "取得当前可见直播流地址。",
+      "method": "GET",
+      "url": "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo",
+      "authentication": "public / session optional",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "room_id": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "protocol": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "0,1",
+            "enum": [
+              "0",
+              "1",
+              "0,1"
+            ]
+          },
+          "format": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "0,1,2"
+          },
+          "codec": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "0,1"
+          },
+          "qn": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10000,
+            "default": 80
+          },
+          "platform": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "default": "web",
+            "enum": [
+              "web"
+            ]
+          }
+        },
+        "required": [
+          "room_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_video_like",
+      "category": "互动写入",
+      "description": "点赞/取消点赞视频；like=1点赞、2取消。",
+      "method": "POST",
+      "url": "https://api.bilibili.com/x/web-interface/archive/like",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "aid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "like": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "confirm": {
+            "type": "boolean",
+            "const": true,
+            "description": "确认这次具体的B站状态变更。服务也须以--enable-writes启动。"
+          }
+        },
+        "required": [
+          "aid",
+          "like",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_video_favorite",
+      "category": "互动写入",
+      "description": "将视频加入/移出指定收藏夹，夹ID以逗号分隔。",
+      "method": "POST",
+      "url": "https://api.bilibili.com/x/v3/fav/resource/deal",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "rid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "type": {
+            "type": "integer",
+            "const": 2,
+            "default": 2
+          },
+          "add_media_ids": {
+            "type": "string",
+            "pattern": "^[0-9,]*$",
+            "default": "",
+            "maxLength": 500
+          },
+          "del_media_ids": {
+            "type": "string",
+            "pattern": "^[0-9,]*$",
+            "default": "",
+            "maxLength": 500
+          },
+          "confirm": {
+            "type": "boolean",
+            "const": true,
+            "description": "确认这次具体的B站状态变更。服务也须以--enable-writes启动。"
+          }
+        },
+        "required": [
+          "rid",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_watch_later_add",
+      "category": "互动写入",
+      "description": "将视频加入稍后再看。",
+      "method": "POST",
+      "url": "https://api.bilibili.com/x/v2/history/toview/add",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "aid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "confirm": {
+            "type": "boolean",
+            "const": true,
+            "description": "确认这次具体的B站状态变更。服务也须以--enable-writes启动。"
+          }
+        },
+        "required": [
+          "aid",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_watch_later_delete",
+      "category": "互动写入",
+      "description": "从稍后再看移除指定aid，逗号分隔。",
+      "method": "POST",
+      "url": "https://api.bilibili.com/x/v2/history/toview/del",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "avids": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500,
+            "pattern": "^[0-9]+(,[0-9]+)*$"
+          },
+          "confirm": {
+            "type": "boolean",
+            "const": true,
+            "description": "确认这次具体的B站状态变更。服务也须以--enable-writes启动。"
+          }
+        },
+        "required": [
+          "avids",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_user_follow",
+      "category": "互动写入",
+      "description": "关注/取消关注UP主；act=1关注、2取消。",
+      "method": "POST",
+      "url": "https://api.bilibili.com/x/relation/modify",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "fid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "act": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          },
+          "re_src": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 11
+          },
+          "confirm": {
+            "type": "boolean",
+            "const": true,
+            "description": "确认这次具体的B站状态变更。服务也须以--enable-writes启动。"
+          }
+        },
+        "required": [
+          "fid",
+          "act",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_comment_add",
+      "category": "互动写入",
+      "description": "发布一条评论/回复；视频oid为aid，回复需root和parent。",
+      "method": "POST",
+      "url": "https://api.bilibili.com/x/v2/reply/add",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "oid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "type": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "root": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "parent": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "confirm": {
+            "type": "boolean",
+            "const": true,
+            "description": "确认这次具体的B站状态变更。服务也须以--enable-writes启动。"
+          }
+        },
+        "required": [
+          "oid",
+          "message",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "bilibili_comment_delete",
+      "category": "互动写入",
+      "description": "删除当前账号自己的指定评论。",
+      "method": "POST",
+      "url": "https://api.bilibili.com/x/v2/reply/del",
+      "authentication": "session",
+      "wbi": false,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "oid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "type": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 1
+          },
+          "rpid": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "confirm": {
+            "type": "boolean",
+            "const": true,
+            "description": "确认这次具体的B站状态变更。服务也须以--enable-writes启动。"
+          }
+        },
+        "required": [
+          "oid",
+          "rpid",
+          "confirm"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

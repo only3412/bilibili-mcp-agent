@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bilibili-mcp-agent"
+version = "0.1.0"
+description = "A local Model Context Protocol server for Bilibili discovery, media metadata, account reads, and gated interactions"
+requires-python = ">=3.12"
+dependencies = ["mcp>=1.26,<2", "httpx>=0.28,<1", "cryptography>=46"]
+
+[project.scripts]
+bilibili-mcp = "bilibili_mcp.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bilibili_mcp"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"browser-import" = "bilibili_mcp/browser_import"

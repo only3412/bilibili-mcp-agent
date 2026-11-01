@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.local.json
+.private/
+dist/
+gcm-diagnose.log
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/

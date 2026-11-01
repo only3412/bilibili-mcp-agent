@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Bilibili MCP 本机会话导入",
+  "version": "0.1.0",
+  "description": "点击后仅将当前配置中的B站会话导入本机MCP，不读取其他网站。",
+  "permissions": ["cookies"],
+  "host_permissions": ["https://*.bilibili.com/*", "http://127.0.0.1/*"],
+  "action": {"default_title": "导入B站会话到本机MCP", "default_popup": "popup.html"}
+}

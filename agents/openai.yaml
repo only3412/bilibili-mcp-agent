@@ -1,0 +1,4 @@
+interface:
+  display_name: Bilibili MCP Agent
+  short_description: Bilibili tools for agents
+  default_prompt: Use the Bilibili MCP tools to search, inspect, and organize Bilibili content.
