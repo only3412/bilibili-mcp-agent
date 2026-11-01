@@ -6,11 +6,15 @@
       "command": "uv",
       "args": [
         "run",
+        "--frozen",
         "--project",
         "${PLUGIN_ROOT}",
         "bilibili-mcp"
       ],
-      "cwd": "${PLUGIN_ROOT}"
+      "cwd": "${PLUGIN_ROOT}",
+      "env": {
+        "UV_PROJECT_ENVIRONMENT": "${PLUGIN_DATA}/.venv"
+      }
     }
   }
 }

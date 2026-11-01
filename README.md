@@ -33,11 +33,36 @@ Plugins 1.0 manifests. Import the repository or package into a local plugin
 host that supports stdio MCP servers. The configured command is portable:
 
 ```text
-uv run --project ${PLUGIN_ROOT} bilibili-mcp
+uv run --frozen --project ${PLUGIN_ROOT} bilibili-mcp
 ```
 
-The first launch lets `uv` resolve the dependencies from `pyproject.toml`.
-For a repeatable local environment, run the install helper first.
+Dependencies are installed from `uv.lock`. Plugin hosts expand `PLUGIN_ROOT`
+and `PLUGIN_DATA`; the virtual environment is created in the host's writable
+plugin data directory, so the plugin files can remain read-only.
+
+## Use with any stdio MCP client
+
+Add this server to a client that accepts `mcpServers` configuration and has
+`uvx` and Git on `PATH`:
+
+```json
+{
+  "mcpServers": {
+    "bilibili": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/only3412/bilibili-mcp-agent@v0.1.0",
+        "bilibili-mcp"
+      ]
+    }
+  }
+}
+```
+
+The client starts the server on demand. No API key or login is needed for
+public tools; import your own Bilibili session separately for personal tools.
+Clients with other configuration formats can use the same command and args.
 
 ## Install locally
 
@@ -118,11 +143,11 @@ private session. The repository does not ship or request a credential.
 ## Development and verification
 
 ```bash
-uv pip install --system --requirement requirements-lock.txt --editable .
-python -m unittest discover -s tests -v
-python -m compileall src
-python scripts/export-capabilities.py
-python -m build
+uv sync --frozen
+uv run --frozen python -m unittest discover -s tests -v
+uv run --frozen python -m compileall src
+uv run --frozen python scripts/export-capabilities.py
+uv build
 ```
 
 The test suite uses local doubles and does not send Bilibili write requests.
